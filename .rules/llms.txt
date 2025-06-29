@@ -1,0 +1,192 @@
+# Project Context & Conventions for "Frontend Developer"
+
+> Only the App Router is used (`/src/app`). The Pages Router is not used.
+
+---
+
+## 1. Tech Stack
+
+- **Framework:** Next.js 15+
+- **React:** 19+
+- **TypeScript**
+- **Styling:** Tailwind CSS v4
+- **UI Kit:** Shadcn/ui
+- **Forms:** React Hook Form
+- **Validation:** Zod
+- **Data Fetching:** SWR (with Axios)
+- **API Communication:** All requests go through Next.js `/api/*` routes
+- **Icons:** Lucide Icon (ALWAYS USE THIS — DO NOT CREATE CUSTOM SVG ICONS)
+
+---
+
+## 2. API Access Rules
+
+✅ **All requests (GET, POST, PUT, DELETE) must go through `src/app/api/*.ts` as a proxy to the external backend**  
+✅ **The Axios instance from `@/lib/api.ts` must only be used inside API route handlers**  
+✅ **Client and server components fetch data from local endpoints (`/api/...`) using SWR and the fetcher from `@/lib/fetcher.ts`**
+
+---
+
+## 3. Axios Instance
+
+```ts
+// src/lib/api.ts
+import axios from "axios";
+
+const apiClient = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+export default apiClient;
+```
+
+---
+
+## 4. SWR Fetcher
+
+```ts
+// src/lib/fetcher.ts
+import axios from "@/lib/api";
+
+export const fetcher = (url: string) => axios.get(url).then(res => res.data);
+```
+
+---
+
+## 5. Folder Structure
+
+```
+src/
+├── app/
+│   ├── api/
+│   │   └── users.ts           # API route = local proxy to external API
+│   └── dashboard/
+│       └── page.tsx
+├── components/
+│   ├── features/              # Feature-specific components
+│   │   └── ProfileForm.tsx
+│   └── ui/                    # Reusable Shadcn components
+├── context/
+├── hooks/
+│   └── useUser.ts
+├── lib/
+│   ├── api.ts                 # Axios instance (external API only)
+│   ├── fetcher.ts             # SWR fetcher using api.ts
+│   ├── utils.ts
+│   └── validators/
+└── types/
+```
+
+---
+
+## 6. API Route Example
+
+```ts
+// src/app/api/users.ts
+import { NextResponse } from "next/server";
+import api from "@/lib/api";
+
+export async function GET() {
+  const { data } = await api.get("/users");
+  return NextResponse.json(data);
+}
+
+export async function POST(req: Request) {
+  const body = await req.json();
+  const { data } = await api.post("/users", body);
+  return NextResponse.json(data, { status: 201 });
+}
+```
+
+---
+
+## 7. Server Component Fetching (via proxy API)
+
+```tsx
+// src/app/dashboard/page.tsx
+import { fetcher } from "@/lib/fetcher";
+
+export default async function Page() {
+  const data = await fetcher("http://localhost:3000/api/users"); // Local proxy
+  return <div>{data.length} users</div>;
+}
+```
+
+⚠️ **Do NOT use native `fetch()` directly**  
+⚠️ **Always use the fetcher from `@/lib/fetcher.ts` for data fetching**
+
+---
+
+## 8. Client Component + SWR
+
+```tsx
+// src/components/features/ProfileForm.tsx
+"use client";
+
+import useSWR from "swr";
+import { fetcher } from "@/lib/fetcher";
+
+export default function ProfileForm() {
+  const { data, isLoading } = useSWR("/api/users", fetcher);
+
+  if (isLoading) return <p>Loading...</p>;
+  return <pre>{JSON.stringify(data)}</pre>;
+}
+```
+
+---
+
+## 9. Form Submission Pattern
+
+```tsx
+// src/components/features/ProfileForm.tsx
+"use client";
+
+import axios from "axios";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { profileSchema, ProfileSchemaType } from "@/lib/validators/profile-schema";
+
+export function ProfileForm() {
+  const form = useForm<ProfileSchemaType>({
+    resolver: zodResolver(profileSchema),
+  });
+
+  const onSubmit = async (data: ProfileSchemaType) => {
+    await axios.post("/api/profile", data); // LOCAL API route
+  };
+
+  return (
+    <form onSubmit={form.handleSubmit(onSubmit)}>
+      {/* fields */}
+    </form>
+  );
+}
+```
+
+---
+
+## 10. Component Placement
+
+- React components must use `PascalCase`, e.g., `ProfileForm.tsx`
+- All reusable components and Shadcn components should be placed in `components/ui/`
+- Feature-specific components should be placed in `components/features/`
+- Avoid duplication, deep folder nesting, or inconsistent naming
+- Use `"use client"` only when necessary, and make sure article components are rendered on the server side
+
+---
+
+## 11. File Naming Conventions
+
+- **Components:** Use `PascalCase`, e.g., `UserProfile.tsx`
+- **Hooks:** Use `camelCase`, prefix with `use`, e.g., `useUser.ts`
+- **API Routes:** Use `camelCase`, e.g., `userLogin.ts`
+- **Utility files:** Use `camelCase`, e.g., `formatDate.ts`
+- **Schema/validators:** Use `kebab-case`, e.g., `profile-schema.ts`
+- **Global types/interfaces:** Use `PascalCase`, one per file if possible
+- **Folders:** Use `kebab-case`, unless it’s a reserved folder (`app`, `lib`, etc.)
+
+---
