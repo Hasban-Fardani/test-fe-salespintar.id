@@ -1,139 +1,159 @@
-# 🧪 test-frontend-sellerpintar.id
+# Frontend Blog Article App
 
-Frontend project berbasis **Next.js 15+** (App Router) dengan standar folder & konvensi ketat untuk efisiensi tim dan konsistensi kode.
+A modern blog article management app built with Next.js 15, React 19, TypeScript, Tailwind CSS v4, and shadcn/ui. This app is designed with a clear separation of user and admin roles, supports SEO-friendly server components, and integrates with a remote backend via local API proxy routes.
 
----
-
-## ⚙️ Teknologi
-
-- 🔧 **Next.js 15+** + **React 19+**
-- 🎨 Tailwind CSS v4
-- 🧩 shadcn/ui
-- 🧾 React Hook Form + Zod
-- 🔄 SWR + Axios
-- 🔤 Lucide Icons
+![preview](./public/images/preview-desktop.jpg)
 
 ---
 
-## 📦 Struktur Folder
+## ✨ Features
 
+### User
+
+* Login / Register with form validation
+* List articles with:
+
+  * Search (with debounce)
+  * Filter by category
+  * Pagination
+* View full article detail
+* See related articles (same category)
+
+### Admin
+
+* Login / Register with form validation
+* Create / Edit / Delete categories
+* Create / Edit / Delete articles
+* Preview article before submission
+* Manage content with full form validation
+
+---
+
+## 🪄 Tech Stack
+
+* **Framework:** Next.js 15 (App Router)
+* **UI:** React 19, Tailwind CSS v4, shadcn/ui
+* **Form:** React Hook Form + Zod
+* **Data Fetching:** SWR + Axios
+* **Icons:** lucide-react
+* **Validation:** Zod
+* **State Management:** Zustand (for auth)
+* **Theme:** next-themes
+
+---
+
+## 🚀 Getting Started
+
+```bash
+# Install dependencies
+pnpm install
+
+# Run dev server
+pnpm dev
+
+# Lint and format
+pnpm lint     # for linting only
+pnpm beautify # lint + format
 ```
+
+Ensure you have the following `.env`:
+
+```env
+NEXT_PUBLIC_API_URL=https://test-fe.mysellerpintar.com/api
+```
+
+---
+
+## 🔄 Folder Structure
+
+```bash
 src/
-├─ app/               # Halaman + API lokal
-│  ├─ api/            # Proxy ke backend eksternal
-│  └─ dashboard/
-├─ components/
-│  ├─ features/       # Komponen spesifik fitur
-│  └─ ui/             # Komponen reusable (shadcn)
-├─ context/           
-├─ hooks/             # Custom hooks
-├─ lib/               # API client, fetcher, utils, validator
-├─ types/             # Global types/interfaces
+├── app/                     # App Router
+│   ├── api/                 # Local API proxy
+│   ├── dashboard/           # Admin-only pages
+│   └── articles/            # Public article pages
+├── components/
+│   ├── features/            # Feature-specific components
+│   └── ui/                  # Reusable shadcn/ui components
+├── lib/
+│   ├── api.ts               # Axios instance
+│   ├── fetcher.ts           # SWR fetcher
+│   ├── utils.ts
+│   └── validators/
+├── hooks/
+├── context/
+├── types/
+public/
+├── images/
 ```
 
 ---
 
-## 🔌 Aturan API
+## 📁 API Access Rules
 
-✅ Semua request lewat `/api/*.ts` (proxy)  
-✅ Gunakan `api.ts` HANYA di route handler  
-✅ Ambil data dengan `fetcher.ts` (jangan pakai native `fetch()`)
+* All requests go through `/src/app/api/*.ts` as proxy
+* Use `@/lib/api.ts` only in `api/` route handlers
+* Use `@/lib/fetcher.ts` with SWR in components
 
----
-
-## 📤 Fetcher + Axios
-
-```ts
-// lib/api.ts
-import axios from "axios";
-export default axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
-  headers: { "Content-Type": "application/json" },
-});
-```
-
-```ts
-// lib/fetcher.ts
-import api from "@/lib/api";
-export const fetcher = (url: string) => api.get(url).then(res => res.data);
-```
-
----
-
-## 🧠 Contoh Penggunaan
-
-### ✅ Server Component
+### Example: Server Component Fetch
 
 ```tsx
-import { fetcher } from "@/lib/fetcher";
-
-export default async function Page() {
-  const data = await fetcher("http://localhost:3000/api/users");
-  return <div>{data.length} users</div>;
-}
+const data = await fetcher("http://localhost:3000/api/articles")
 ```
 
-### ✅ Client Component (SWR)
+### Example: Client Component Fetch (with SWR)
 
 ```tsx
-"use client";
-
-import useSWR from "swr";
-import { fetcher } from "@/lib/fetcher";
-
-const ProfileForm = () => {
-  const { data, isLoading } = useSWR("/api/users", fetcher);
-  if (isLoading) return <p>Memuat...</p>;
-  return <pre>{JSON.stringify(data)}</pre>;
-};
+const { data, isLoading } = useSWR("/api/articles", fetcher)
 ```
 
-### ✅ Form Submission
+### Example: Form Submit
 
 ```tsx
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
-import { profileSchema, ProfileSchemaType } from "@/lib/validators/profile-schema";
-
-const form = useForm<ProfileSchemaType>({ resolver: zodResolver(profileSchema) });
-
-const onSubmit = async (data: ProfileSchemaType) => {
-  await axios.post("/api/profile", data);
-};
+await axios.post("/api/articles", data) // use local API route
 ```
 
 ---
 
-## 🧩 Penamaan File
+## 📅 Commit Conventions
 
-| Jenis         | Format       | Contoh               |
-|---------------|--------------|----------------------|
-| Komponen      | `PascalCase` | `UserProfile.tsx`    |
-| Hook          | `camelCase`  | `useUser.ts`         |
-| API Route     | `camelCase`  | `userLogin.ts`       |
-| Schema        | `kebab-case` | `profile-schema.ts`  |
-| Folder        | `kebab-case` | `profile-form/`      |
+Use [Conventional Commits](https://www.conventionalcommits.org/):
 
----
+| Type        | When to use                                 |
+| ----------- | ------------------------------------------- |
+| `feat:`     | Add new user-facing feature                 |
+| `fix:`      | Fix a bug                                   |
+| `docs:`     | Documentation only changes                  |
+| `style:`    | Changes that do not affect logic (CSS)      |
+| `chore:`    | Install deps, setup config, or housekeeping |
+| `refactor:` | Code restructure, no behavior change        |
 
-## 📜 Script Penting
+### Example:
 
-| Perintah       | Fungsi                          |
-|----------------|---------------------------------|
-| `pnpm dev`     | Jalankan development server     |
-| `pnpm build`   | Build untuk production          |
-| `pnpm start`   | Start server production         |
-| `pnpm beautify`| Format + lint pakai Biome       |
-
----
-
-## 👤 Author
-
-**Hasban Fardani**  
-📍 Cimahi, Jawa Barat  
-🌐 [hasban.site](https://hasban.site) • 🧑‍💻 [GitHub](https://github.com/Hasban-Fardani)
+```bash
+git commit -m "chore: install axios and setup api instance"
+git commit -m "feat: implement article search with debounce"
+```
 
 ---
 
-> Untuk struktur lengkap dan rule tambahan, lihat `llms.txt` di project root.
+## 🔧 Deployment
+
+App is designed to be deployed on [Vercel](https://vercel.com/):
+
+* SSR + CSR ready
+* Optimized for SEO
+* Environment variable support
+
+---
+
+## 🌐 Live Demo
+> [test-fe-salespintar-id-hf.vercel.app](test-fe-salespintar-id-hf.vercel.app)
+
+---
+
+
+## ✌️ Author
+
+Made with ❤️ by Hasban Fardani
+[hasban.site](https://hasbanfardani.my.id)  •  [GitHub](https://github.com/Hasban-Fardani)  •  [YouTube](https://www.youtube.com/@code_with_hasban)
