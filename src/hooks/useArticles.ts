@@ -1,6 +1,6 @@
 import useSWR from 'swr';
 import { fetcher } from '@/lib/fetcher';
-import { ArticleEntity } from '@/types/entities/article';
+import { ArticleResponse } from '@/types/api/article';
 
 interface UseArticleParams {
   category?: string;
@@ -16,18 +16,15 @@ export function useArticle({ category, search, page = 1 }: UseArticleParams = {}
 
   const url = `/api/articles?${params.toString()}`;
 
-  const { data, error, isLoading, mutate } = useSWR<{
-    articles: ArticleEntity[];
-    total: number;
-    currentPage: number;
-    totalPages: number;
-  }>(url, fetcher);
-
+  const { data, error, isLoading, mutate } = useSWR<ArticleResponse>(url, fetcher);
+  const total = data?.total || 0;
+  const limit = data?.limit || 10;
+  const totalPage = Math.ceil(total / limit || 1);
   return {
-    articles: data?.articles || [],
+    articles: data?.data || [],
     total: data?.total || 0,
-    currentPage: data?.currentPage || 1,
-    totalPages: data?.totalPages || 1,
+    currentPage: data?.page || 1,
+    totalPages: totalPage || 1,
     isLoading,
     error,
     mutate,

@@ -16,7 +16,7 @@ interface ArticlePageProps {
 
 export default async function ArticleFilterPage({ searchParams }: ArticlePageProps) {
   const resolvedSearchParams = await searchParams;
-  
+
   const category = resolvedSearchParams.category ?? "";
   const search = resolvedSearchParams.search ?? "";
   const page = resolvedSearchParams.page ?? "1";
@@ -46,14 +46,16 @@ export default async function ArticleFilterPage({ searchParams }: ArticlePagePro
 
   return (
     <main className="flex flex-col items-center w-full">
-      <Navbar className="md:hidden"/>
+      <Navbar className="md:hidden" />
       <ArticleBanner />
 
       <section className="py-10 px-4 w-full max-w-7xl">
         <ArticleList articles={articles} total={total} />
       </section>
 
-      <Pagination currentPage={currentPage} totalPages={totalPages}/>
+      {total > limit && (
+        <Pagination currentPage={currentPage} totalPages={totalPages} />
+      )}
     </main>
   );
 }

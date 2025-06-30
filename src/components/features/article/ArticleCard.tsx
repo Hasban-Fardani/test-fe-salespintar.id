@@ -17,7 +17,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
     
     const description = `${content.slice(0, 50)}...`
     return (
-        <article className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow max-w-md min-w-80">
+        <article className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow max-w-md min-w-80 flex flex-col h-full">
             <div className="relative h-48 w-full">
                 <Image
                     src={imageSrc}
@@ -28,7 +28,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
                 />
             </div>
 
-            <div className="p-6">
+            <div className="p-6 flex flex-col flex-grow">
                 <time className="text-sm text-gray-500 mb-2 block">
                     {formatDate(new Date(createdAt).toString())}
                 </time>
@@ -39,13 +39,15 @@ export function ArticleCard({ article }: ArticleCardProps) {
                     </Link>
                 </h3>
 
-                <div className="text-gray-600 text-sm mb-4 line-clamp-3">
+                <div className="text-gray-600 text-sm mb-4 line-clamp-3 flex-grow">
                     <ArticleHTMLContent content={description} isPreview={true}/>
                 </div>
 
-                <Badge variant="tag">
-                    {category.name}
-                </Badge>
+                <div className="mt-auto">
+                    <Badge variant="tag">
+                        {category.name}
+                    </Badge>
+                </div>
             </div>
         </article>
     );

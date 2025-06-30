@@ -31,7 +31,9 @@ export default async function ArticlePage() {
         <ArticleList articles={articles} total={total} />
       </section>
 
-      <Pagination currentPage={currentPage} totalPages={totalPages}/>
+      {total > limit && (
+        <Pagination currentPage={currentPage} totalPages={totalPages} />
+      )}
     </main>
   );
 }
