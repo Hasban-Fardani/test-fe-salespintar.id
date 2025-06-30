@@ -175,7 +175,7 @@ export function ProfileForm() {
 - All reusable components and Shadcn components should be placed in `components/ui/`
 - Feature-specific components should be placed in `components/features/`
 - Avoid duplication, deep folder nesting, or inconsistent naming
-- Use `"use client"` only when necessary, and make sure article components are rendered on the server side
+- Use `"use client"` if the component is correspondent to article features, so make sure article components are rendered on the server side. But other component eg UserProfileCard should be client component
 
 ---
 

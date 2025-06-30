@@ -98,7 +98,7 @@ export default function ArticleBanner() {
 
     const brandLabelElement = useMemo(() => (
         <div className="mb-4">
-            <span className="inline-block px-3 py-1 text-sm font-medium bg-white/20 backdrop-blur-sm rounded-full">
+            <span className="inline-block px-3 py-1 text-sm font-medium">
                 Blog genzet
             </span>
         </div>

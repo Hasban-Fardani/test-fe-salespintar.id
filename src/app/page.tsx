@@ -1,6 +1,7 @@
 import ArticleBanner from "@/components/features/article/ArticleHeroSection";
 import ArticleList from "@/components/features/article/ArticleList.server";
 import { Pagination } from "@/components/features/article/ArticlePagination";
+import { Footer } from "@/components/navigation/Footer";
 import { ArticleResponse } from "@/types/api/article";
 import { ArticleEntity } from "@/types/entities/article";
 
@@ -24,16 +25,19 @@ export default async function ArticlePage() {
   const totalPages = Math.ceil(total / limit);
 
   return (
-    <main className="flex flex-col items-center w-full">
-      <ArticleBanner />
+    <>
+      <main className="flex flex-col items-center w-full">
+        <ArticleBanner />
 
-      <section className="py-10 px-4 w-full max-w-7xl">
-        <ArticleList articles={articles} total={total} />
-      </section>
+        <section className="py-10 px-4 w-full max-w-7xl">
+          <ArticleList articles={articles} total={total} />
+        </section>
 
-      {total > limit && (
-        <Pagination currentPage={currentPage} totalPages={totalPages} />
-      )}
-    </main>
+        {total > limit && (
+          <Pagination currentPage={currentPage} totalPages={totalPages} />
+        )}
+      </main>
+      <Footer />
+    </>
   );
 }
