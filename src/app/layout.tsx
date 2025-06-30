@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Archivo } from 'next/font/google'
 import "./globals.css";
 import { Toaster } from "sonner";
-import { Footer } from "@/components/navigation/Footer";
 
 const archivo = Archivo({
   variable: "--font-archivo",
@@ -30,7 +29,6 @@ export default function RootLayout({
       >
         <Toaster />
         {children}
-        <Footer />
       </body>
     </html>
   );
