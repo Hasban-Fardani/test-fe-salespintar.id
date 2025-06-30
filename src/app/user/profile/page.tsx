@@ -1,3 +1,4 @@
+// TODO: refactor later, this still bad code because use use fetch and not useSWR or axios, i will standardize this later
 'use client';
 
 import { useRouter } from 'next/navigation';

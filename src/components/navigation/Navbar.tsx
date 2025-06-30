@@ -84,7 +84,7 @@ export default function Navbar({ variant = 'default', className = '' }: NavbarPr
                 className={`flex items-center space-x-2 h-auto px-2 py-1 rounded-lg focus-visible:ring-offset-0 focus-visible:ring-2 focus-visible:ring-ring ${variant === 'transparent' ? 'hover:bg-gray-500' : ''}`}
               >
                 <Avatar className="w-8 h-8">
-                  <AvatarFallback>{user.username[0]}</AvatarFallback>
+                  <AvatarFallback>{user?.username?.[0]?.toUpperCase() || 'U'}</AvatarFallback>
                 </Avatar>
                 <span className={`hidden sm:block text-sm font-medium text-gray-900 underline ${variant === 'transparent' ? 'text-white' : ''}`}>
                   {user.username}
