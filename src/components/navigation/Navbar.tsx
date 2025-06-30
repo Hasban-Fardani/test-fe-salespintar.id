@@ -69,14 +69,14 @@ export default function Navbar({ variant = 'default', className = '' }: NavbarPr
           <Image
             src={imageSrc}
             alt="Logoipsum"
-            width={120}
-            height={32}
-            className="h-8 w-auto"
+            width={90}
+            height={24}
+            className="h-8 w-[90px] object-contain"
             priority
           />
         </Link>
 
-        {user && (
+        {user ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -105,6 +105,15 @@ export default function Navbar({ variant = 'default', className = '' }: NavbarPr
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+        ): (
+          <div className="flex items-center space-x-2">
+            <Link href="/login">
+              <Button variant="outline" className="text-black">Login</Button>
+            </Link>
+            <Link href="/register">
+              <Button>Register</Button>
+            </Link>
+          </div>
         )}
       </div>
     </nav>
