@@ -157,9 +157,9 @@ export function RegisterForm() {
             </CardContent>
             <CardFooter className="flex-col items-center gap-4">
                 <div className="text-sm text-muted-foreground">
-                    Don't have an account?{" "}
-                    <a href="/register" className="font-medium text-primary hover:underline">
-                        Register
+                    Already have an account?{" "}
+                    <a href="/login" className="font-medium text-primary hover:underline">
+                        Login
                     </a>
                 </div>
             </CardFooter>
