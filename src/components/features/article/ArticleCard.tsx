@@ -13,11 +13,11 @@ export function ArticleCard({ article }: ArticleCardProps) {
     if (!article) return null
     
     const { id, title, content, category, createdAt, imageUrl } = article
-    const imageSrc = imageUrl ?? 'https://placehold.co/600x400/png'
+    const imageSrc = imageUrl ?? '/images/placeholder-image.jpg'
     
     const description = `${content.slice(0, 50)}...`
     return (
-        <article className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow max-w-md min-w-80 flex flex-col h-full">
+        <article className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow max-w-xl min-w-80 flex flex-col h-full">
             <div className="relative h-48 w-full">
                 <Image
                     src={imageSrc}

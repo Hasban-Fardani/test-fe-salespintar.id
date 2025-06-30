@@ -8,7 +8,7 @@ type ArticleHTMLContentProps = {
 
 export function ArticleHTMLContent({ content, isPreview = false }: ArticleHTMLContentProps) {
     const clean = DOMPurify.sanitize(content);
-    const cleanHTML = isPreview ? truncateHTML(clean, 200) : clean; 
+    const cleanHTML = isPreview ? truncateHTML(clean, 300) : clean; 
     
     return (
         <div
