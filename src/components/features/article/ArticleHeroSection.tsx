@@ -112,7 +112,7 @@ export default function ArticleBanner() {
                             >
                                 <option value="">All Categories</option>
                                 {categories.map((cat) => (
-                                    <option key={cat.id} value={cat.name}>
+                                    <option key={cat.id} value={cat.id}>
                                         {cat.name}
                                     </option>
                                 ))}

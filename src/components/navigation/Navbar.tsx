@@ -106,9 +106,9 @@ export default function Navbar({ variant = 'default', className = '' }: NavbarPr
             </DropdownMenuContent>
           </DropdownMenu>
         ): (
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
             <Link href="/login">
-              <Button variant="outline">Login</Button>
+              <Button variant="outline" className="text-black">Login</Button>
             </Link>
             <Link href="/register">
               <Button>Register</Button>
